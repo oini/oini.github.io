@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset=utf-8 />
-<title>A simple map</title>
+<title>Oini's trial at mapping</title>
 <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 <script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
@@ -12,11 +12,1020 @@
 </style>
 </head>
 <body>
+<style>
+.legend label,
+.legend span {
+  display:block;
+  float:left;
+  height:15px;
+  width:20%;
+  text-align:center;
+  font-size:9px;
+  color:#808080;
+  }
+#inputs,
+#errors,
+#directions {
+    position: absolute;
+    width: 33.3333%;
+    max-width: 300px;
+    min-width: 200px;
+}
+
+#inputs {
+    z-index: 10;
+    top: 10px;
+    left: 10px;
+}
+
+#directions {
+    z-index: 99;
+    background: rgba(0,0,0,.8);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#errors {
+    z-index: 8;
+    opacity: 0;
+    padding: 10px;
+    border-radius: 0 0 3px 3px;
+    background: rgba(0,0,0,.25);
+    top: 90px;
+    left: 10px;
+}
+
+</style>
+<script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.3.0/mapbox.directions.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.3.0/mapbox.directions.css' type='text/css' />
+
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-hash/v0.2.1/leaflet-hash.js'></script>
+
+<div id='legend' style='display:none;'>
+  <strong>The Title or Explanation of your Map</strong>
+  <nav class='legend clearfix'>
+    <span style='background:#F1EEF6;'></span>
+    <span style='background:#BDC9E1;'></span>
+    <span style='background:#74A9CF;'></span>
+    <span style='background:#2B8CBE;'></span>
+    <span style='background:#045A8D;'></span>
+    <label>0 - 20%</label>
+    <label>40%</label>
+    <label>60%</label>
+    <label>80%</label>
+    <label>100%</label>
+    <small>Source: <a href="#link to source">Name of source</a></small>
+</div>
 <div id='map'></div>
+<div id='inputs'></div>
+<div id='errors'></div>
+<div id='directions'>
+  <div id='routes'></div>
+  <div id='instructions'></div>
+</div>
 <script>
+var geojson =[
+{
+  	"type": "FeatureCollection",
+  	"generator": "overpass-turbo",
+  	"copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  	"timestamp": "2015-09-09T10:33:02Z",
+  	"features": [
+    {
+      	"type": "Feature",
+      	"id": "node/16173236",
+      	"properties": {
+        "@id": "node/16173236",
+        "admin_level": "2",
+        "capital": "yes",
+        "is_capital": "country",
+        "is_in": "National Capital Region, NCR, India",
+        "is_in:continent": "Asia",
+        "is_in:country": "India",
+        "is_in:country_code": "IN",
+        "is_in:iso_3166_2": "IN-DL",
+        title: "New Delhi",
+        "name:ace": "New delhi",
+        "name:af": "Nieu-Delhi",
+        "name:am": "ኒው ዴሊ",
+        "name:an": "Nueva Delhi",
+        "name:ang": "Nīƿe Delhi",
+        "name:ar": "نيودلهي",
+        "name:bat-smg": "Naujasės Delės",
+        "name:be": "Нью-Дэлі",
+        "name:be-x-old": "Нью-Дэлі",
+        "name:bg": "Ню Делхи",
+        "name:bn": "নতুন দিল্লি",
+        "name:bo": "ནེའུ་དིལ་ལི།",
+        "name:bpy": "নুৱা দিল্লী",
+        "name:br": "New Delhi",
+        "name:bs": "New Delhi",
+        "name:ca": "Nova Delhi",
+        "name:cbk-zam": "Nueva Delhi",
+        "name:ckb": "نیودلھی",
+        "name:co": "New Delhi",
+        "name:crh": "Nyu Deli",
+        "name:cs": "Nové Dillí",
+        "name:cy": "Delhi Newydd",
+        "name:da": "New Delhi",
+        "name:de": "Neu-Delhi",
+        "name:diq": "Delhiyo Newe",
+        "name:dv": "ނިއުދިއްލީ",
+        "name:el": "Νέο Δελχί",
+        "name:en": "New Delhi",
+        "name:eo": "Nov-Delhio",
+        "name:es": "Nueva Delhi",
+        "name:et": "New Delhi",
+        "name:eu": "New Delhi",
+        "name:ext": "Nueva Delhi",
+        "name:fa": "دهلی نو",
+        "name:fi": "New Delhi",
+        "name:fiu-vro": "New Delhi",
+        "name:fr": "New Delhi",
+        "name:fy": "Nij Delly",
+        "name:ga": "Nua-Deilí",
+        "name:gd": "New Delhi",
+        "name:gl": "Nova Deli - नई दिल्ली",
+        "name:gv": "Delhi Noa",
+        "name:he": "ניו דלהי",
+        "name:hi": "नई दिल्ली",
+        "name:hif": "New Delhi",
+        "name:hr": "New Delhi",
+        "name:ht": "Niou Deli",
+        "name:hu": "Újdelhi",
+        "name:hy": "Նյու Դելի",
+        "name:ia": "Nove Delhi",
+        "name:id": "New Delhi",
+        "name:io": "Nova-Delhi",
+        "name:is": "Nýja Delí",
+        "name:it": "Nuova Delhi",
+        "name:ja": "ニューデリー",
+        "name:jv": "New Delhi",
+        "name:ka": "ნიუ-დელი",
+        "name:kk": "Нью-Дели",
+        "name:kl": "New Delhi",
+        "name:kn": "ಹೊಸ ದೆಹಲಿ",
+        "name:ko": "뉴델리",
+        "name:ks": "نٔو دلھی",
+        "name:ku": "Delhiya Nû",
+        "name:la": "Dellium Novum",
+        "name:lb": "Nei-Delhi",
+        "name:lij": "Neuva Delhi",
+        "name:lmo": "New Delhi",
+        "name:lt": "Naujasis Delis",
+        "name:lv": "Ņūdeli",
+        "name:mg": "New Delhi",
+        "name:mi": "New Delhi",
+        "name:mk": "Њу Делхи",
+        "name:ml": "ന്യൂ ഡെൽഹി",
+        "name:mn": "Шинэ Дели",
+        "name:mr": "नवी दिल्ली",
+        "name:ms": "New Delhi",
+        "name:my": "နယူးဒေလီမြို့",
+        "name:mzn": "نو دهلی",
+        "name:nah": "Yancuīc Deli",
+        "name:ne": "नयाँ दिल्ली",
+        "name:nl": "New Delhi",
+        "name:nn": "New Delhi",
+        "name:no": "New Delhi",
+        "name:nov": "Novi Deli",
+        "name:oc": "Nòva Delhi",
+        "name:os": "Нью-Дели",
+        "name:pa": "ਨਵੀਂ ਦਿੱਲੀ",
+        "name:pam": "New Delhi",
+        "name:pl": "Nowe Delhi",
+        "name:pms": "New Delhi",
+        "name:pnb": "نئی دلی",
+        "name:pt": "Nova Deli",
+        "name:qu": "Musuq Dilhi",
+        "name:ro": "New Delhi",
+        "name:ru": "Нью-Дели",
+        "name:sa": "नवदेहली",
+        "name:sah": "Саҥа Дели",
+        "name:scn": "Nova Delhi",
+        "name:sco": "New Delhi",
+        "name:si": "නව දිල්ලිය",
+        "name:simple": "New Delhi",
+        "name:sk": "Naí Dillí",
+        "name:sl": "New Delhi",
+        "name:so": "New Delhi",
+        "name:sq": "New Delhi",
+        "name:sr": "Њу Делхи",
+        "name:sv": "New Delhi",
+        "name:sw": "New Delhi",
+        "name:ta": "புது தில்லி",
+        "name:te": "క్రొత్త ఢిల్లీ",
+        "name:tg": "Ню-Дели",
+        "name:th": "นิวเดลี",
+        "name:tl": "Bagong Delhi",
+        "name:tr": "Yeni Delhi",
+        "name:ug": "Yéngi Déhli",
+        "name:uk": "Нью-Делі",
+        "name:ur": "نئی دہلی",
+        "name:vi": "Tân Delhi",
+        "name:war": "New Delhi",
+        "name:yi": "ניי דעלי",
+        "name:yo": "New Delhi",
+        "name:zh": "新德里",
+        "name:zh-min-nan": "Sin Delhi",
+        "name:zh-yue": "新德里",
+        "place": "city",
+        "place:cca": "a1",
+        "population": "11007835",
+        "population:date": "2011",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "wikipedia": "en:New Delhi"
+      },
+      	"geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2159562,
+          28.6138967
+        ]
+      }
+    },
+    {
+      	"type": "Feature",
+      	"id": "node/316376860",
+      	"properties": {
+        "@id": "node/316376860",
+        title: "South Moti Bagh",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1696479,
+          28.5826805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/316416994",
+      "properties": {
+        "@id": "node/316416994",
+        "alt_name:vi": "Dilli",
+        "description": "Same level as an Indian State, but ruled directly by the federal national government",
+        "gns:dsg": "ADM1",
+        "gns:uni": "9349459",
+        "is_in:country": "India",
+        "is_in:country_code": "IN",
+        title: "Delhi",
+        "name:de": "Nationales Hauptstadtterritorium Delhi",
+        "name:en": "Delhi",
+        "name:hi": "दिल्ली",
+        "name:hu": "Delhi",
+        "name:kn": "ದೆಹಲಿ",
+        "name:ru": "Дели",
+        "name:uk": "Делі",
+        "name:ur": "دہلی",
+        "name:vi": "Delhi",
+        "official_name": "National Capital Territory of Delhi",
+        "official_name:vi": "Lãnh thổ Thủ đô Quốc gia Delhi",
+        "place": "state",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1716954,
+          28.6273928
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/410058536",
+      "properties": {
+        "@id": "node/410058536",
+        title: "Paharganj",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2140607,
+          28.6414989
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/561299050",
+      "properties": {
+        "@id": "node/561299050",
+        title: "Connaught Place",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2201473,
+          28.630974
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/561306743",
+      "properties": {
+        "@id": "node/561306743",
+        title: "Safdarjung",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "neighbourhood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.210903,
+          28.5929662
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/561316957",
+      "properties": {
+        "@id": "node/561316957",
+        "addr:city": "Delhi",
+        "addr:housename": "Oddway International",
+        "addr:housenumber": "5A / 7",
+        "addr:postcode": "110002",
+        "addr:street": "5a , Ansari Road",
+        title: "Oddway International",
+        "phone": "+91-9873336444",
+        "place": "Pharma_exporter,_delhi",
+        "products": "Geftinat , Veenat , erlonat , kamagra , cancer , HIV Aids",
+        "source": "Natco Pharma dealer n exporter",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "website": "http://www.oddwayinternational.com"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2441691,
+          28.6447702
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/563659578",
+      "properties": {
+        "@id": "node/563659578",
+        title: "Chanakyapuri",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "suburb"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1885212,
+          28.5946775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/938409470",
+      "properties": {
+        "@id": "node/938409470",
+        title: "Basti Hazrat Khwaja Mir Dard",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2291323,
+          28.6398873
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/938622749",
+      "properties": {
+        "@id": "node/938622749",
+        title: "Sunder Nagar",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2421181,
+          28.6016454
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/938635525",
+      "properties": {
+        "@id": "node/938635525",
+        title: "Nizamuddin West",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2449546,
+          28.588365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/938635580",
+      "properties": {
+        "@id": "node/938635580",
+        title: "Nizamuddin East",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2503854,
+          28.5896671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/938641774",
+      "properties": {
+        "@id": "node/938641774",
+        title: "Golf Links",
+        "place": "neighbourhood",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2311628,
+          28.5959698
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/938641801",
+      "properties": {
+        "@id": "node/938641801",
+        title: "Rabindra Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2228693,
+          28.5989623
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/939107101",
+      "properties": {
+        "@id": "node/939107101",
+        title: "Lodhi Colony",
+        "place": "neighbourhood",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2268576,
+          28.586203
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/939284645",
+      "properties": {
+        "@id": "node/939284645",
+        title: "North Moti Bagh",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1769289,
+          28.5818356
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/941021674",
+      "properties": {
+        "@id": "node/941021674",
+        title: "Pusa",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1710543,
+          28.6375023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/941021868",
+      "properties": {
+        "@id": "node/941021868",
+        title: "Todapur",
+        "place": "neighbourhood",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1587112,
+          28.6217523
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/941021972",
+      "properties": {
+        "@id": "node/941021972",
+        title: "Ranjeet Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.162929,
+          28.6459661
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/947950174",
+      "properties": {
+        "@id": "node/947950174",
+        title: "Nau Sena Bagh",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1964153,
+          28.5853398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1740893951",
+      "properties": {
+        "@id": "node/1740893951",
+        title: "Satya Niketan",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1690202,
+          28.5878919
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2715305647",
+      "properties": {
+        "@id": "node/2715305647",
+        title: "Rajendra Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1834115,
+          28.6397317
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2720403251",
+      "properties": {
+        "@id": "node/2720403251",
+        title: "Daryaganj",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.243048,
+          28.64609
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2723877684",
+      "properties": {
+        "@id": "node/2723877684",
+        title: "Jaipur Estate",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2519283,
+          28.5878849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2729140410",
+      "properties": {
+        "@id": "node/2729140410",
+        title: "Nizamuddin",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2423341,
+          28.5909417
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2809115218",
+      "properties": {
+        "@id": "node/2809115218",
+        "alt_name": "Arakpur Bagh Mochi Village",
+        title: "Arakpur Bagh",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1701151,
+          28.5860468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2809312966",
+      "properties": {
+        "@id": "node/2809312966",
+        title: "Ganesh Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2851699,
+          28.6250692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2809312967",
+      "properties": {
+        "@id": "node/2809312967",
+        title: "North Pandav Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2840426,
+          28.6184003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2812851723",
+      "properties": {
+        "@id": "node/2812851723",
+        title: "Janta Garden",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2869023,
+          28.6127547
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2812873842",
+      "properties": {
+        "@id": "node/2812873842",
+        "alt_name": "Samastpur Village",
+        title: "Samastpur",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.284866,
+          28.6137593
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2837341338",
+      "properties": {
+        "@id": "node/2837341338",
+        title: "East Patel Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1725666,
+          28.645649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2952012234",
+      "properties": {
+        "@id": "node/2952012234",
+        title: "Guru Nanak Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1598664,
+          28.6458975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2952012235",
+      "properties": {
+        "@id": "node/2952012235",
+        title: "New Ranjeet Nagar",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.1589391,
+          28.646457
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2963994062",
+      "properties": {
+        "@id": "node/2963994062",
+        title: "Arjun Park",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2783394,
+          28.6440141
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2963994063",
+      "properties": {
+        "@id": "node/2963994063",
+        title: "New Lahore Mohalla",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2735917,
+          28.6441834
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2963994064",
+      "properties": {
+        "@id": "node/2963994064",
+        title: "Sarojini Park",
+        "place": "locality",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star'
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2787848,
+          28.6452553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2963994065",
+      "properties": {
+        "@id": "node/2963994065",
+        title: "Shastri Nagar",
+        'marker-color': '#7ec9b1',
+        'marker-size': 'large',
+        'marker-symbol': 'star',
+        "place": "locality"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.2762548,
+          28.6438771
+        ]
+      }
+    }
+  ]
+}];
+
 L.mapbox.accessToken = 'pk.eyJ1Ijoib2luaSIsImEiOiJOeGF5QzNZIn0.6OgrVXKq-v2DRpZFU55wDw';
-var map = L.mapbox.map('map', 'oini.e1ec58b7')
-    .setView([28.6128, 77.2300], 15);
+var map = L.mapbox.map('map', null, {zoomControl: false})
+    .setView([28.6128, 77.2300], 15)
+    .addControl(L.mapbox.geocoderControl('mapbox.places'));
+
+var layers = {
+      Oini: L.mapbox.tileLayer('oini.e1ec58b7'),
+      Streets: L.mapbox.tileLayer('mapbox.streets')
+  };
+
+layers.Streets.addTo(map);
+L.control.layers(layers).addTo(map);
+
+var nprGrid = L.mapbox.gridLayer('oini.e1ec58b7').addTo(map);
+
+// you would usually use the gridControl to display a nice box in the corner
+// with your data, since we want a popup instead we won't initialize the gridControl
+
+nprGrid.on('mouseover', function(e) {
+    if (!e.data) return;
+    console.log("test");
+    var popup = L.popup()
+        .setLatLng(e.latLng)
+        .setContent(e.data.name)
+        .openOn(map);
+});
+
+map.legendControl.addLegend(document.getElementById('legend').innerHTML);
+
+// move the attribution control out of the way
+map.attributionControl.setPosition('bottomleft');
+
+// create the initial directions object, from which the layer
+// and inputs will pull data.
+var directions = L.mapbox.directions();
+
+var directionsLayer = L.mapbox.directions.layer(directions)
+    .addTo(map);
+
+var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions)
+    .addTo(map);
+
+var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions)
+    .addTo(map);
+
+var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions)
+    .addTo(map);
+
+var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions)
+    .addTo(map);
+
+var myLayer = L.mapbox.featureLayer().addTo(map);
+
+myLayer.setGeoJSON(geojson);
+myLayer.on('mouseover', function(e) {
+    e.layer.openPopup();
+});
+myLayer.on('mouseout', function(e) {
+    e.layer.closePopup();
+});
+
+var hash = L.hash(map);
 </script>
 </body>
 </html>
